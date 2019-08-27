@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<form action="javascript:void(0);" method="POST" onsubmit="app.Add()">
+    <input type="text" id="add-name" placeholder="New country">
+    <input type="submit" value="Add">
+</form>
+<!-- edit form -->
+<div id="spoiler" role="aria-hidden">
+    <form action="javascript:void(0);" method="POST" id="saveEdit">
+        <input type="text" id="edit-name">
+        <input type="submit" value="Edit" /> <a onclick="CloseInput()" aria-label="Close">&#10006;</a>
+    </form>
+</div>
+<p id="counter"></p>
+<table id="list">
+    <tr>
+        <th>Name</th>
+    </tr>
+    <tbody id="countries">
+    </tbody>
+</table>
+<script src="scripts.js"></script>
+</body>
+</html>
