@@ -10,7 +10,7 @@
 </head>
 <body>
 <form action="javascript:void(0);" method="POST" onsubmit="app.Add()">
-    <input type="text" id="add-name" placeholder="New country">
+    <input type="text" id="add-name" placeholder="New country" required>
     <input type="submit" value="Add">
 </form>
 <!-- edit form -->
@@ -21,6 +21,7 @@
     </form>
 </div>
 <p id="counter"></p>
+
 <table id="list">
     <tr>
         <th>Name</th>
@@ -28,6 +29,7 @@
     <tbody id="countries">
     </tbody>
 </table>
+
 <script src="scripts.js"></script>
 </body>
 </html>

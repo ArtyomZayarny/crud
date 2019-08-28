@@ -2,7 +2,6 @@
 let app = new function () {
     this.el = document.getElementById('countries');
     this.list = document.getElementById('list');
-
     this.countries = ['France', 'Germany', 'England', 'Spain', 'Belgium', 'Italy', 'Portugal', 'Irland', 'Luxembourg'];
     this.Count = function(data) {
         let el = document.getElementById('counter');
@@ -32,6 +31,7 @@ let app = new function () {
         return this.el.innerHTML = data;
     };
     this.Add =  function () {
+
         let el = document.getElementById('add-name');
         let country = el.value;
        if (country) {
@@ -42,6 +42,24 @@ let app = new function () {
            // Dislay the new list
            this.FetchAll();
        }
+
+        let request = fetch('http://localhost:3008', {
+            method: 'POST',
+            body: JSON.stringify(country.trim())
+        }).then(
+            function (response) {
+                if (response.status !== 200) {
+                    console.log(response.status);
+                } else {
+                    console.log('send');
+                    response.text().then((result) => {
+                       console.log(result);
+                    })
+                }
+            }
+        ).catch((e) => {
+            console.log(e);
+        })
     }
     function CloseInput() {
         document.getElementById('spoiler').style.display = 'none';
