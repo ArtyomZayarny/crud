@@ -13,17 +13,22 @@ var ID= function () {
 let objBuff = fs.readFileSync('countries.json');
 let fileObj = JSON.parse(objBuff);
 
+// function removeItem(obj){
+//     for(let key in obj) {
+//         if()
+//     }
+// }
+
 const server = http.createServer((req, res) => {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
     res.setHeader('Access-Control-Allow-Origin','*');
+    res.setHeader('Access-Control-Allow-Methods', 'DELETE');
     if (req.method === "GET" ) {
         let result = JSON.stringify(fileObj);
           res.end(result);
     }
     if (req.method === "POST") {
-
-        console.log('post')
         req.on('data', (data) => {
 
             //get input value from front
@@ -48,6 +53,19 @@ const server = http.createServer((req, res) => {
             //res.end(data);
         });
     };
+
+    if (req.method === "DELETE") {
+        req.on('data', (data) => {
+            //console.log( JSON.parse(data));
+        });
+
+        // for(let key in obj) {
+        //     if (key == id) {
+        //         delete obj[key]
+        //     }
+        // }
+        // return obj
+    }
     res.end('Hello World\n')
 
 

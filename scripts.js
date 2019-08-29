@@ -16,14 +16,14 @@ let app = new function () {
             el.innerHTML = 'No ' + name;
         }
     }
-    function renderList(countriesObj) {
+    function renderList(countriesObj) {;
         let data = '';
         for (let key in countriesObj) {
             data += '<tr>';
-                    data += '<td>' + countriesObj[key]['country'] + '</td>';
-                    data += '<td><button onclick="app.Edit(' + countriesObj[key]['country'] + ')">Edit</button></td>';
-                    data += '<td><button onclick="app.Delete(' + countriesObj[key]['country'] + ')">Delete</button></td>';
-                    data += '</tr>';
+                data += '<td>' + countriesObj[key]['country'] + '</td>';
+                data += '<td><button onclick="app.Edit(\'' + key+ '\')">Edit</button></td>';
+                data += '<td><button onclick="app.Delete(\'' + key+ '\')">Delete</button></td>';
+                data += '</tr>';
         }
         return data;
     }
@@ -33,12 +33,11 @@ let app = new function () {
                 response.json().then((result) => {
                    let listHtmlStr = renderList(result);
                     countries.innerHTML = listHtmlStr;
-                })
+                });
             }
         )
     };
     this.Add = function () {
-
         let el = document.getElementById('add-name');
         let country = el.value;
         if (country) {
@@ -94,10 +93,22 @@ let app = new function () {
         }
     }
     this.Delete = function (item) {
+        console.log(item);
+        let deleteItem= fetch('http://localhost:3008',{
+            method: 'DELETE',
+            body: item
+        });
+        deleteItem.then(
+            (response) => {
+                response.text().then((result) => {
+                    console.log(result);
+                })
+            }
+        )
         // Delete the current row
-        this.countries.splice(item, 1);
+        //this.countries.splice(item, 1);
         // Display the new list
-        this.FetchAll();
+        //this.FetchAll();
     };
 }
 window.onload = function () {
