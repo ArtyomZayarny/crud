@@ -27,7 +27,8 @@ let app = new function () {
         }
         return data;
     }
-    this.FetchAll = function () {
+    this.FetchAll = function (obj = null) {
+
         fetch('http://localhost:3008').then(
             function (response) {
                 response.json().then((result) => {
@@ -41,14 +42,8 @@ let app = new function () {
         let el = document.getElementById('add-name');
         let country = el.value;
         if (country) {
-            // Add the new value
-            // this.countries.push(country.trim());
-            // Reset input value
             el.value = '';
-            // Dislay the new list
-            this.FetchAll();
         }
-
         let request = fetch('http://localhost:3008', {
             method: 'POST',
             body: JSON.stringify(country.trim())
@@ -68,11 +63,9 @@ let app = new function () {
         })
         this.FetchAll();
     }
-
     function CloseInput() {
         document.getElementById('spoiler').style.display = 'none';
     }
-
     this.Edit = function (item) {
         let el = document.getElementById('edit-name');
         //Display value in the field
@@ -93,26 +86,22 @@ let app = new function () {
         }
     }
     this.Delete = function (item) {
-        console.log(item);
-        let deleteItem= fetch('http://localhost:3008',{
+        let deleteItem = fetch('http://localhost:3008',{
             method: 'DELETE',
-            body: item
+            body: JSON.stringify(item)
         });
         deleteItem.then(
             (response) => {
                 response.text().then((result) => {
-                    console.log(result);
+                   console.log(result);
                 })
             }
         )
-        // Delete the current row
-        //this.countries.splice(item, 1);
-        // Display the new list
-        //this.FetchAll();
+       //get response with  new data
+        this.FetchAll();
     };
 }
 window.onload = function () {
-    console.log('Hello')
     app.FetchAll();
 }
 
