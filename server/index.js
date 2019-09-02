@@ -18,7 +18,7 @@ const server = http.createServer((req, res) => {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
     res.setHeader('Access-Control-Allow-Origin','*');
-    res.setHeader('Access-Control-Allow-Methods', 'DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'DELETE, PUT');
     if (req.method === "GET" ) {
         let fileObj = fs.readFileSync('countries.json', 'utf8');
           res.end(fileObj);
@@ -74,6 +74,32 @@ const server = http.createServer((req, res) => {
         let file    = fs.readFileSync('countries.json', 'utf8');
         let fileObj = JSON.stringify(file);
         res.end(fileObj);
+    }
+
+    if (req.method === "PUT") {
+        req.on('data', (data) => {
+            let dataObj = JSON.parse(data);
+
+            //get file content
+            let fileStr = fs.readFileSync('countries.json', 'utf8');
+            let fileObj = JSON.parse(fileStr);
+
+           for(let key in fileObj) {
+               if (key == dataObj.id) {
+                   fileObj[key].country = dataObj.value;
+               }
+           }
+
+            let result = JSON.stringify(fileObj);
+            // write data tofile
+            fs.writeFileSync('countries.json', result, 'utf8',function(err) {
+                if (err) throw err;
+                console.log('Add success data was updated');
+            });
+
+
+
+        })
     }
 
     res.end('Hello World\n')

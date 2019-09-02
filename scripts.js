@@ -73,7 +73,6 @@ let app = new function () {
     this.Edit = function (item) {
         let el = document.getElementById('edit-name');
         let tr = document.getElementById(`${item}`);
-        let countryName = tr.querySelector('td');
 
 
         //Display value in the field
@@ -84,7 +83,23 @@ let app = new function () {
 
             tr.querySelector('td').innerText = el.value;
             CloseInput();
+            upObj = {
+                id:item,
+                value:el.value
+            }
+            let update = fetch('http://localhost:3008', {
+                method: 'PUT',
+                body: JSON.stringify(upObj)
+            })
+            update.then(
+                (response) => {
+                    response.json().then((result) => {
+                        console.log(result)
+                    })
+                }
+            )
         }
+
     }
     this.Delete = function (item) {
         let deleteItem = fetch('http://localhost:3008/?id=' + item +'',{
