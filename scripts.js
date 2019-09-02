@@ -19,7 +19,7 @@ let app = new function () {
     function renderList(countriesObj) {;
         let data = '';
         for (let key in countriesObj) {
-            data += '<tr>';
+            data += '<tr id="'+key+'">';
                 data += '<td>' + countriesObj[key]['country'] + '</td>';
                 data += '<td><button onclick="app.Edit(\'' + key+ '\')">Edit</button></td>';
                 data += '<td><button onclick="app.Delete(\'' + key+ '\')">Delete</button></td>';
@@ -53,8 +53,8 @@ let app = new function () {
                     console.log(response.status);
                 } else {
                     console.log('send');
-                    response.text().then((result) => {
-                        console.log(result);
+                    response.json().then((result) => {
+
                     })
                 }
             }
@@ -62,43 +62,41 @@ let app = new function () {
             console.log(e);
         })
         this.FetchAll();
+
     }
     function CloseInput() {
         document.getElementById('spoiler').style.display = 'none';
     }
+
+
+
     this.Edit = function (item) {
         let el = document.getElementById('edit-name');
+        let tr = document.getElementById(`${item}`);
+        let countryName = tr.querySelector('td');
+
+
         //Display value in the field
-        el.value = this.countries[item];
+        el.value = tr.querySelector('td').textContent;
         self = this;
         document.getElementById('spoiler').style.display = 'block';
         document.getElementById('saveEdit').onsubmit = function () {
-            // Get value
-            let country = el.value;
-            if (country) {
-                // Edit value
-                self.countries.splice(item, 1, country.trim());
-                // Display the new list
-                self.FetchAll();
-                // Hide fields
-                CloseInput();
-            }
+
+            tr.querySelector('td').innerText = el.value;
+            CloseInput();
         }
     }
     this.Delete = function (item) {
-        let deleteItem = fetch('http://localhost:3008',{
-            method: 'DELETE',
-            body: JSON.stringify(item)
+        let deleteItem = fetch('http://localhost:3008/?id=' + item +'',{
+            method: 'DELETE'
         });
         deleteItem.then(
             (response) => {
-                response.text().then((result) => {
-                   console.log(result);
+                response.json().then((result) => {
+                    this.FetchAll();
                 })
             }
         )
-       //get response with  new data
-        this.FetchAll();
     };
 }
 window.onload = function () {

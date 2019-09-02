@@ -1,5 +1,6 @@
 const http = require('http');
 const fs   = require('fs');
+const url = require('url');
 const hostname = '127.0.0.1';
 const port = 3008;
 const countries = require('./countries');
@@ -9,8 +10,7 @@ var ID= function () {
     return '_' + Math.random().toString(36).substr(2, 9);
 };
 
-let objBuff = fs.readFileSync('countries.json');
-let fileObj = JSON.parse(objBuff);
+
 
 const server = http.createServer((req, res) => {
     //get object data from  file
@@ -20,8 +20,8 @@ const server = http.createServer((req, res) => {
     res.setHeader('Access-Control-Allow-Origin','*');
     res.setHeader('Access-Control-Allow-Methods', 'DELETE');
     if (req.method === "GET" ) {
-        let result = JSON.stringify(fileObj);
-          res.end(result);
+        let fileObj = fs.readFileSync('countries.json', 'utf8');
+          res.end(fileObj);
     }
     if (req.method === "POST") {
         console.log('post');
@@ -35,57 +35,47 @@ const server = http.createServer((req, res) => {
             let obj = {country: countryVal};
             let id = ID();
             countryObj[id] = obj;
-            let strData = JSON.stringify(countryObj);
+
+            //get file content
+            let fileStr = fs.readFileSync('countries.json', 'utf8');
+            let fileObj = JSON.parse(fileStr);
 
             //Merge object
-            Object.assign(fileObj,countryObj)
+               Object.assign(fileObj,countryObj);
+
             let result = JSON.stringify(fileObj);
-            //write data tofile
-            fs.writeFile('countries.json', result, 'utf8',function(err) {
+            // write data tofile
+            fs.writeFileSync('countries.json', result, 'utf8',function(err) {
                 if (err) throw err;
                 console.log('Add success data was updated');
             });
-            res.end()
-        });
+         });
     }
 
     if (req.method === "DELETE") {
-        req.on('data', function(data){
-            let id = JSON.parse(data);
-            //remove item
-            for(let key in fileObj) {
+        let parsedUrl = url.parse(req.url, true);
+         let id = parsedUrl.query.id;
+
+            let content = fs.readFileSync('countries.json', 'utf8');
+            let contentObj = JSON.parse(content);
+
+            //  //Remove item
+            for (let key in contentObj) {
                 if (key == id) {
-                 delete fileObj[key];
+                    delete contentObj[key];
                 }
             }
-            //rewrite file
-            let result = JSON.stringify(fileObj);
-            fs.writeFileSync('countries.json', result, 'utf8',function(err) {
-                if (err) throw err;
-                console.log('Delete success data was updated');
-            });
-        });//req.on
-
-        //read file without item
-        var n = null;
-        fs.readFile('countries.json', function (err, data) {
-            if(err) {
-                throw err;
-            }
-            n = JSON.parse(data);
-         procesFile();
+            let result = JSON.stringify(contentObj);
+        fs.writeFileSync('countries.json', result, 'utf8',function(err) {
+            if (err) throw err;
+            console.log('Add success data was updated');
         });
 
-        function procesFile () {
-            return n
-        }
-
-        res.end(n);
-
-        //console.log(file);
-       // console.log(n);
-        res.end('new object');
+        let file    = fs.readFileSync('countries.json', 'utf8');
+        let fileObj = JSON.stringify(file);
+        res.end(fileObj);
     }
+
     res.end('Hello World\n')
 
 
